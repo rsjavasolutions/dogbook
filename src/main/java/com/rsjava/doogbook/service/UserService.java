@@ -34,8 +34,8 @@ public class UserService {
         throw new InvalidUsernameFormatException(user.getUsername());
     }
 
-    boolean isCorrectUsernameFormat(String username){
-        Pattern pattern = Pattern.compile("^(?=.*\\d)(?=.*\\w).{6,20}$");
+   private boolean isCorrectUsernameFormat(String username){
+        Pattern pattern = Pattern.compile("^(?=.*\\d)(?=.*\\w)(?!.*\\s)(?!.*\\!)(?!.*[\\{\\}]).{6,20}$");
         Matcher matcher = pattern.matcher(username);
         return matcher.matches();
     }
