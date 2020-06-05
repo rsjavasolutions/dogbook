@@ -1,5 +1,7 @@
 package com.rsjava.doogbook.service;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.rsjava.doogbook.exception.InvalidUsernameFormatException;
 import com.rsjava.doogbook.model.User;
 import com.rsjava.doogbook.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -8,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -24,6 +28,16 @@ public class UserService {
     }
 
     public User addUser(User user){
-        return userRepository.save(user);
+        if (isCorrectUsernameFormat(user.getUsername())) {
+            return userRepository.save(user);
+        }
+        throw new InvalidUsernameFormatException(user.getUsername());
     }
+
+    boolean isCorrectUsernameFormat(String username){
+        Pattern pattern = Pattern.compile("^(?=.*\\d)(?=.*\\w).{6,20}$");
+        Matcher matcher = pattern.matcher(username);
+        return matcher.matches();
+    }
+
 }
